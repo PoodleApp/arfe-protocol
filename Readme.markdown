@@ -231,15 +231,14 @@ point in time as opposed to the "current", living document.
 
 ## References
 
-[Activity Streams 2.0]: https://www.w3.org/TR/activitystreams-core/
-
+[Activity Streams 2.0][]
 [DMARC][]: Domain-based Message Authentication, Reporting and Conformance
-[DMARC]: https://tools.ietf.org/html/rfc7489
-
-[JSON-LD]: https://w3c.github.io/json-ld-syntax/
-
+[JSON-LD][]
 [RFC 2392][]: `mid:` and `cid:` URN schemes for email messages and content parts
-[RFC 2392]: https://tools.ietf.org/html/rfc2392
-
 [RFC 5322][]: Internet Message Format, A.K.A. Email
+
+[Activity Streams 2.0]: https://www.w3.org/TR/activitystreams-core/
+[DMARC]: https://tools.ietf.org/html/rfc7489
+[JSON-LD]: https://w3c.github.io/json-ld-syntax/
+[RFC 2392]: https://tools.ietf.org/html/rfc2392
 [RFC 5322]: https://tools.ietf.org/html/rfc5322
