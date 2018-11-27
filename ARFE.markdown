@@ -349,18 +349,60 @@ For example,
 > Alice has granted you permission to edit the Q4 Planning Doc.
 > You can use Poodle <https://github.com/PoodleApp/poodle> to make edits.
 
-## Retrieving Conversation History, and Quoting
-
-## ARFE, PGP, and S/MIME
-
-## Order of Presentation
-
 ## Handling Update Conflicts
+
+A conflict occurs in cases where two or more authorized ARFE update messages
+replace the same revision of a resource.
+It is critical that conversation participants have a consistent view of the
+state of each resource.
+It is also desirable that conflicts be resolved with minimal user intervention.
+
+A later iteration of this spec might define options for automatically merging
+conflicting versions of a resource in limited cases.
+Such an algorithm must be fully-specified to ensure consistency.
+
+A user may explicitly resolve a conflict by sharing an ARFE update that points
+to all conflicting revisions as its previous versions.
+(A.k.a. Git rules)
+
+A conflict results in essentially more than one branch of a resource.
+It is possible that users may have sent further updates to one or more of those
+branches.
+If one branch has ARFE updates from more distinct participants than any of the
+others then it is considered to be the current version of the resource.
+(A.k.a. Blockchain rules)
+
+If one version of the resource is at least five minutes newer than any other
+version then it is considered to be the current version of the resource.
+The time of the message is determined by time received as reported by the users
+email service.
+In the case of the sender that will be the time the message was submitted for
+delivery.
+(A.k.a. first come, first served)
+
+Case study: Alice boards an airplane, and updates Q4 Planning Doc with the
+new projections.
+She is offline, so she cannot share the changes for a few hours until the plane
+lands.
+Two hours into Alice's flight Bob updates Q4 Planning Doc to add emoji.
+Bob is online, so his changes are shared immediately.
+Several coworkers have time to see Bob's changes before Alice's plane lands.
+When the plane does land, Alice's computer sends the update.
+Everyone's email servers are in agreement that Alice's update was received
+hours after Bob's;
+so Bob's update is considered to be the current version of the document.
+
+When a client detects that changes made by its user have resulted in a conflict
+should notify the user to give them an opportunity to reconcile the conflicting
+versions.
+If the conflict can be resolved automatically then the author of the version
+that was accepted does not need to be notified.
+But any user whose changes were not accepted should be notified so that their
+changes are not lost without warning.
 
 ## References
 
 - [Activity Streams 2.0][]
-- [DMARC][]: Domain-based Message Authentication, Reporting and Conformance
 - [JSON-LD][]
 - [RFC 2392][]: `mid:` and `cid:` URN schemes for email messages and content parts
 - [RFC 5322][]: Internet Message Format, A.K.A. Email
