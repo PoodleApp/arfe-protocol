@@ -20,7 +20,7 @@ A conversation may be identified by the `mid:` URI of a "root" message
 (see [RFC 2392][]).
 The conversation consists of all messages available to a user that include the
 ID of the root message in a `References` header,
-or that are reference a message ID that is part of the conversation.
+or that reference a message ID that is part of the conversation.
 It should be noted that a conversation is a directed acyclic graph (DAG);
 as messages are added to a conversation the conversation may merge with another
 conversation,
@@ -37,19 +37,22 @@ access to.
 
 Each email message may have many content parts,
 thanks to the MIME data format.
-Exactly one content part in each message is the primary content part,
+Exactly one content part in each message is the primary content part as
 determined by its position in the MIME structure.
 (Note that email clients may disagree on which is the primary content part in
 a message due to the fact that MIME allows for fallback representations of
 a content part,
-certain clients cannot display certain content types.)
+and clients are permitted to ignore content types that they are not programmed
+to display.)
 
 TODO: Link to to rules for determining primary content part,
 or write them here.
 
-A "resource" is a piece of data with an associated MIME type,
-and associated ARFE metadata (e.g. its access control policy).
-Resources are derived from email content parts.
+A "resource" is an ARFE document that is derived from one or more email content
+parts.
+Each resource is introduced by a content part that represents its initial
+revision.
+Subsequent ARFE messages may modify a resource.
 
 A conversation is interpreted as a set of resources each identified by URI.
 Some of those resources come from primary content parts,
@@ -57,12 +60,13 @@ and should be presented to the user directly.
 Other resources come from non-primary content parts that may be referenced by
 the primary resources in some way.
 
-An email message with an ARFE document in the primary content position has the
-effect of changing the interpretation of a conversation by replacing the
-content and/or metadata of a resource with new values,
+An ARFE message
+(an email message with an ARFE document in the primary content position)
+has the effect of changing the interpretation of a conversation by replacing
+the content and/or metadata of a resource with new values,
 or has the effect of introducing a new resource to the conversation.
-A resource that has been modified by an ARFE message retains URI.
-Thus a resource are "living" - they may change over time but have a stable URI.
+A resource that has been modified by an ARFE message retains the same URI.
+Thus resources are "living" - they may change over time but have a stable URI.
 
 In the ARFE model an email conversation resembles a Git repository in that an
 ARFE update specifies a specific revision of a resource,
@@ -78,10 +82,10 @@ but are otherwise inaccessible via the resource URI.
 
 ## References to Living Resources vs Static Content
 
-A resource is a logical constructed computed by interpreting a set of ARFE
-documents, and other email content parts.
-Each of those inputs is a piece of static content with its own URI,
-such as a `mid:` URI as defined by [RFC 2392][].
+A resource is a logical construct computed by interpreting a set of ARFE
+messages, and other email content parts.
+Each of those inputs is a piece of static content with its own URI.
+This will usually be a `mid:` URI as defined by [RFC 2392][].
 
 An ARFE-enabled client must be able to interoperate with Classic Email clients,
 which means that a primary content part in an email message that does not
@@ -135,7 +139,7 @@ the resource.
 The URI of any ARFE document that updates the resource serves as the URI of the
 new revision.
 
-The resources from the interpreted conversation are displayed to user,
+The resources from the interpreted conversation are displayed to the user,
 as opposed to primary content parts as a Classic Email client would do.
 Each attachment part is replaced by its corresponding resource.
 
@@ -143,8 +147,8 @@ The downside is that any reference to the content part itself will not resolve
 to the living document.
 For example a message might include inline images;
 the images could be modified using ARFE,
-but the HTML resource that includes those images is likely to refer to the
-content part directly,
+but the HTML part that references those images is likely to use `mid:` or `cid:`
+URIs -
 especially if the message was produced by a Classic Email client.
 This would also require the Activity over Email spec to be written to take into
 account the special handling of `arfe:` URIs.
@@ -183,8 +187,8 @@ This also introduces a use of URIs that does not match any specified semantics.
 In this document "ARFE message" refers to a primary content part in an email
 message that contains an ARFE document, and has the `application/ld+json`
 content type.
-ARFE is based on [JSON-LD][],
-which allows ARFE and Activity Streams to coexist in one document.
+ARFE is based on [JSON-LD][] which allows ARFE and Activity Streams to coexist
+in one document.
 An "ARFE document" is an Activity Streams document that may also include
 ARFE-specific properties.
 
