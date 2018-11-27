@@ -304,6 +304,7 @@ any message that uses Activity Streams for its primary content should include
 a fallback representation.
 That applies equally to ARFE documents.
 ARFE adds the complication of representing update events.
+
 If resource content differs from the previous revision then changes should be
 presented to Classic Email users somehow.
 
@@ -326,6 +327,23 @@ For example this change to the content of a comment:
 
 Could be represented in fallback content with a message like,
 "s/desert/dessert" or "When I said 'desert' of course I meant 'dessert'".
+
+Some update operations might change resource metadata,
+such as access control policies,
+but leave content unchanged.
+In these cases an ARFE-enabled client will not show a new element in the
+conversation view;
+but a Classic Email client will,
+and users will be confused if the new message is does not explain itself
+somehow.
+It is suggested that the fallback content for such a message include
+a user-friendly description of the change,
+and a link to an ARFE-enabled client or to an article that describes what ARFE
+is.
+For example,
+
+> Alice has granted you permission to edit the Q4 Planning Doc.
+> You can use Poodle <https://github.com/PoodleApp/poodle> to make edits.
 
 ## Retrieving Conversation History, and Quoting
 
