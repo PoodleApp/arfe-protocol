@@ -1,10 +1,11 @@
 # Activity over Email
 
-Historically the primary content part in an email message ([RFC 5322][]) is
-usually plain text or HTML.
+Historically the primary content in an email message ([RFC 5322][]) is usually
+plain text or HTML.
 A message thread consists of these content parts presented to the user in order
 received.
-ARFE adds [Activity Streams 2.0][] as an option for primary content parts.
+Activity over Email (AoE) adds [Activity Streams 2.0][] as an option for primary
+content.
 Activity Streams parts provide many options for presenting content via
 activity types such as announcements, photo albums, calendar
 events, invitations, likes, etc.
@@ -56,6 +57,8 @@ given in the Activity Streams specification.
 The reason for this is so that activity data and ARFE data can be combined into
 a single document in a single message content part.
 
+TODO: Do we really want to combine documents this way?
+
 ## Compatibility with Classic Email
 
 Classic Email clients are not able to display Activity Streams content.
@@ -79,11 +82,18 @@ and to Classic Email clients.
 
 ## Attachments
 
-In Classic Email if a message has a `multipart/mixed` type the first nested
-part is considered to be primary content,
-and the remaining parts are presented as attachments.
+TODO: Investigate how different email clients handle mixtures of parts with
+`inline` vs `attachment` content disposition.
+If there is a `multipart/mixed` part inside a `multipart/alternative` where
+some of the parts under the `/mixed` part have attachment disposition,
+are those parts presented as attachments?
+If so then messages could present certain parts as attachments only in Classic
+Email clients without special attachment logic for Activity Streams messages.
+
+In Classic Email if a message has a `multipart/mixed` type any nested parts
+with `Content-Disposition: attachment` are presented as attachments.
 Activity Streams allows new options:
-the primary part can specify how other parts are presented.
+primary parts can specify how other parts are presented.
 For example an activity have the type "Create" and link to a PDF content part
 as its object.
 In cases like this the PDF should be placed in the MIME tree so that it is
@@ -91,8 +101,6 @@ presented as an attachment in Classic Email clients;
 but Activity over Email clients should only display attachments that are
 explicitly listed in the activity in cases where the primary content of an
 email message is an `Activity`.
-This is partly to make it possible to use ARFE to modify the attachments
-presented with a message.
 
 In cases where the primary content of an email message is not an `Activity` the
 client should infer an `Activity` that includes a list of attachments based on
@@ -118,20 +126,17 @@ branch that any participants in the current branch are excluded from!
 
 TODO: Discuss branches in more detail.
 
-Quoting in ARFE is entirely unlike quoting in Classic Email.
-In the ARFE model quoted messages are intended to be processed by machine.
-Relevant metadata is computed from email headers,
-content parts must appear in the context of their original message to compute
-correct URIs,
-and digitally-signed parts require a MIME structure to preserve cryptographic
-verifiability.
-For the full [RFC 5322][] content of each quoted message is included,
-which each message appearing in its own content part.
-These content parts should be grouped under a `multipart/related` part which
-indicates that they are not intended to be presented directly to the user.
-An ARFE-enabled client should parse quoted messages and use them to construct
-the interpretation of a conversation if the client does not have copies of
-those messages from another source.
+In Classic Email a quoted version of the conversation is often included in
+replies by default.
+An AoE client may do the same in its fallback representations;
+but in Activity Streams content the client should only include quoted text if
+the user wants to make an inline reply with quoted text.
+Broader conversation context is provided by including full [RFC 5322][] content
+of previous messages with each message in its own content part under
+a `multipart/related` MIME tree.
+This makes quoted context machine-processable allowing a receiving client to
+accurately reconstruct metadata from email message headers,
+and to verify digital signatures.
 
 Messages that are delivered by an email provider can be verified (to some
 extent) with [DMARC][].
@@ -166,6 +171,14 @@ a quoted message should include sufficient context to verify any signed content.
 
 Certain activities provide an explicit ordering.
 For example a comment may be `inReplyTo` a specific object.
+Activities should be arranged in the order that makes most sense according to
+these relations,
+even if it means that activities from the same message will not appear grouped
+to together when presented to the user.
+
+In the absence of explicit ordering, activities originating in the same message
+should be presented in the order they appear in the original message.
+Attachment parts may be grouped separately from inline parts.
 
 For other cases the client should consider the hierarchy of references in
 `References:` and `In-Reply-To:` headers in messages where presentational
@@ -181,7 +194,7 @@ by the user's email service.
 - [Activity Streams 2.0][]
 - [DMARC][]: Domain-based Message Authentication, Reporting and Conformance
 - [JSON-LD][]
-- [RFC 2392][]: `mid:` and `cid:` URN schemes for email messages and content parts
+- [RFC 2392][]: `mid:` and `cid:` URN schemes for email messages and MIME parts
 - [RFC 5322][]: Internet Message Format, A.K.A. Email
 
 [Activity Streams 2.0]: https://www.w3.org/TR/activitystreams-core/
