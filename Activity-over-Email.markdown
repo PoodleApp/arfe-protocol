@@ -134,6 +134,8 @@ the user wants to make an inline reply with quoted text.
 Broader conversation context is provided by including full [RFC 5322][] content
 of previous messages with each message in its own content part under
 a `multipart/related` MIME tree.
+Email messages that are quoted should be sent in a content part with the
+`message/rfc822` MIME type.
 This makes quoted context machine-processable allowing a receiving client to
 accurately reconstruct metadata from email message headers,
 and to verify digital signatures.
