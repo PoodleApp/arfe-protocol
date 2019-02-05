@@ -465,23 +465,33 @@ It is critical that conversation participants have a consistent view of the
 state of each resource.
 It is also desirable that conflicts be resolved with minimal user intervention.
 
-A later iteration of this spec might define options for automatically merging
-conflicting versions of a resource in limited cases.
-Such an algorithm must be fully-specified to ensure consistency.
-
 A user may explicitly resolve a conflict by sharing an ARFE update that points
 to all conflicting revisions as its previous versions.
 (A.k.a. Git rules)
+
+A client should not transmit edits that will produce a conflicting state in
+a resource.
+The client should automatically resolve conflicts if possible,
+or prompt the user to resolve conflicts before transmitting edits.
+If a user's edits result in a conflict that is detected after an edit has been
+transmitted the client may automatically resolve conflicts and transmit
+a conflict resolution to other conversation participants.
+
+A client may use heuristics to estimate which branch of a conflict is the
+"current" version to display to users;
+but in that case the client should indicate that there are also conflicting
+changes.
+Here are some suggested heuristics:
 
 A conflict results in essentially more than one branch of a resource.
 It is possible that users may have sent further updates to one or more of those
 branches.
 If one branch has ARFE updates from more distinct participants than any of the
-others then it is considered to be the current version of the resource.
+others then it may be considered to be the current version of the resource.
 (A.k.a. Blockchain rules)
 
 If one version of the resource is at least five minutes newer than any other
-version then it is considered to be the current version of the resource.
+version then it may be considered to be the current version of the resource.
 The time of the message is determined by time received as reported by the users
 email service.
 In the case of the sender that will be the time the message was submitted for
@@ -501,12 +511,8 @@ hours after Bob's;
 so Bob's update is considered to be the current version of the document.
 
 When a client detects that changes made by its user have resulted in a conflict
-should notify the user to give them an opportunity to reconcile the conflicting
-versions.
-If the conflict can be resolved automatically then the author of the version
-that was accepted does not need to be notified.
-But any user whose changes were not accepted should be notified so that their
-changes are not lost without warning.
+it should notify the user to give them an opportunity to reconcile the
+conflicting versions.
 
 ## TODO
 
